@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Personnages</title>
+</head>
+<body>
+    <h1>Liste des personnages (API sécurisée)</h1>
+    <ul id="personnages"></ul>
+    
+    <h2>Liste des personnages (filtrés)</h2>
+    <input id="inputPrenom" placeholder="Tape un prénom" />
+    <button onclick="rechercher()">Rechercher</button>
+    <ul id="resultats"></ul>
+    <input id="inputPrenom" placeholder="Tape un prénom" oninput="rechercher()" />
+    <ul id="resultats"></ul>
+    <form id="searchForm">
+      <input type="text" id="prenom" placeholder="Tape un prénom" />
+      <button type="submit">Rechercher</button>
+    </form>
+    
+    <ul id="personnages"></ul>
+    
+    <script>
+        function rechercher() {
+            const prenom = document.getElementById("inputPrenom").value;
+            const ul = document.getElementById("resultats");
+            ul.innerHTML = "";
+        
+            fetch(`http://127.0.0.1:8000/personnages?prenom=${prenom}`, {
+                headers: {
+                    "token": "secret123"
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Erreur API : " + response.status);
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(p => {
+                    const li = document.createElement("li");
+                    li.textContent = `${p.nom} - ${p.role}`;
+                    ul.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error("Erreur :", error);
+            });
+        }
+        </script>
+        
+        
+        
+</html>
